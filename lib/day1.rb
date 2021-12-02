@@ -1,4 +1,4 @@
-require "./measurements"
+require "measurements"
 
 class Day1
   def self.increases_by_window
