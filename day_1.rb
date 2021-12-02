@@ -2,29 +2,23 @@ require "./measurements"
 
 class Day1
   def self.increases_by_window
-    total = 0
+    measurements.each_with_index.reduce(0) do |total, (measurement, index)|
+      if index > 1 && bigger_window_than_previous?(index)
+        total += 1
+      end
 
-    measurements.each_with_index do |measurement, index|
-      next if index < 2
-
-      total += 1 if bigger_window_than_previous?(index)
-      puts "total #{total}"
+      total
     end
-
-    total
   end
 
   def self.increases
-    total = 0
+    measurements.each_with_index.reduce(0) do |total, (measurement, index)|
+      if index != 0 && bigger_than_previous?(index)
+        total += 1
+      end
 
-    # measurements.each_with_object(0).with_index do |(measurement, total), index|
-    measurements.each_with_index do |measurement, index|
-      next if index == 0
-
-      total += 1 if bigger_than_previous?(index)
+      total
     end
-
-    total
   end
 
   def self.measurements
