@@ -1,7 +1,8 @@
 class Day2
-  attr_reader :depth, :file_name, :horizontal
+  attr_reader :aim, :depth, :file_name, :horizontal
 
   def initialize(file_name)
+    @aim = 0
     @depth = 0
     @file_name = file_name
     @horizontal = 0
@@ -23,11 +24,15 @@ class Day2
   private
 
   def down(units)
-    @depth += units
+    @aim += units
   end
 
   def forward(units)
     @horizontal += units
+
+    if @aim > 0
+      @depth += (@aim * units)
+    end
   end
 
   def movements
@@ -39,6 +44,6 @@ class Day2
   end
 
   def up(units)
-    @depth -= units
+    @aim -= units
   end
 end
