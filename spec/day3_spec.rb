@@ -14,6 +14,18 @@ describe Day3 do
     end
   end
 
+  describe "#run_second_diagnostics" do
+    it "sets the rates" do
+      checks = diagnostics
+
+      checks.run_second_diagnostics
+
+      expect(checks.oxygen_rating).to eq 23
+      expect(checks.co2_scrubber_rating).to eq 10
+      expect(checks.life_support_rating).to eq 230
+    end
+  end
+
   private
 
   def diagnostics
