@@ -1,9 +1,57 @@
 class Day4
   attr_reader :filepath
-  attr_accessor :most_recent_number, :winning_table
+  attr_accessor :most_recent_number, :winning_table, :winning_tables
 
   def initialize(filepath)
     @filepath = filepath
+  end
+
+  def play_to_lose
+    until all_tables_have_won?
+      play_turn_to_lose
+    end
+  end
+
+  def play_turn_to_lose
+    numbers = numbers_called(5)
+
+    numbers.each do |number|
+      self.most_recent_number = number
+
+      tables.each do |table|
+        table.apply_numbers(number)
+      end
+      check_for_winning_tables
+
+      if is_final_table?
+        self.winning_table = winning_tables.first
+        return
+      else
+        remove_winning_tables_from_collection
+      end
+    end
+  end
+
+  def all_tables_have_won?
+    tables.length == 1 && tables.first.wins?
+  end
+
+  def is_final_table?
+    winning_tables.length == 1 && tables.length == 1
+  end
+
+  def remove_winning_tables_from_collection
+    return unless winning_tables.length > 0
+
+    winning_tables.each do |table|
+      if tables.length == 1
+        if tables.first.wins?
+          self.winning_table = tables.first
+        end
+      else
+        tables.delete(table)
+      end
+    end
   end
 
   def play
@@ -26,9 +74,11 @@ class Day4
     end
   end
 
+  def check_for_winning_tables
+    self.winning_tables = tables.select(&:wins?)
+  end
+
   def check_for_winning_table
-    winners = tables.select(&:wins?)
-    require 'pry'; binding.pry if winners.length > 0
     self.winning_table = tables.find(&:wins?)
   end
 
