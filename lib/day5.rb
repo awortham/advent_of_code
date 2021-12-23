@@ -1,9 +1,10 @@
 class Day5
-  attr_reader :filepath
+  attr_reader :filepath, :diagonal
   attr_accessor :diagram
 
-  def initialize(filepath)
+  def initialize(filepath, diagonal)
     @filepath = filepath
+    @diagonal = diagonal
   end
 
   def overlapping_points
@@ -35,8 +36,16 @@ class Day5
     points.flatten.max
   end
 
+  def usable_lines
+    if diagonal
+      all_lines
+    else
+      horizontal_and_vertical_lines
+    end
+  end
+
   def points
-    @points ||= horizontal_and_vertical_lines.flat_map do |line|
+    @points ||= usable_lines.flat_map do |line|
       line.full_list_coordinates
     end
   end
