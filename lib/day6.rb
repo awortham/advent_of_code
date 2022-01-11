@@ -11,7 +11,7 @@ class Day6
     self.school = set_initial_fish_state
 
     days.times do
-      school.spawn_and_age
+      school.cycle_and_spawn
     end
   end
 
@@ -21,49 +21,66 @@ class Day6
     initial_data = File.read(path)
     timers = initial_data.split(",").map(&:to_i)
 
-    fishes = timers.map do |timer|
-      Fish.new(timer: timer)
+    fish = timers.each_with_object({}) do |timer, acc|
+      acc[timer] += 1 if acc[timer]
+      acc[timer] = 1 unless acc[timer]
     end
 
-    School.new(fishes)
+    School.new(fish)
   end
 end
 
 class School
-  attr_accessor :fishes
+  attr_accessor :fishes, :new_cycle
 
   def initialize(fishes)
     @fishes = fishes
+    @new_cycle = {}
+  end
+
+  def cycle_and_spawn
+    cycle_fish
+    spawn_fish
+
+    self.fishes = new_cycle
+    self.new_cycle = {}
   end
 
   def size
-    @fishes.size
-  end
-
-  def spawn_and_age
-    new_fishes = []
-
-    fishes.each do |fish|
-      new_fishes << Fish.new(timer: 8) if fish.timer == 0
-      fish.cycle
+    fishes.reduce(0) do |acc, fish|
+      acc += fish.last
     end
-
-    self.fishes = [*fishes, *new_fishes]
-  end
-end
-
-class Fish
-  attr_accessor :timer
-
-  def initialize(timer:)
-    @timer = timer
   end
 
-  def cycle
-    if timer > 0
-      self.timer -= 1
-    else
-      self.timer = 6
+  private
+
+  def cycle_fish
+    fishes.dup.each do |k, v|
+      new_cycle[k - 1] = v
+    end
+  end
+
+  def reproduces?
+    new_cycle[-1]
+  end
+
+  def restart_cycle_of_fish
+    new_cycle[6] += new_cycle[-1] if new_cycle[6]
+    new_cycle[6] = new_cycle[-1] unless new_cycle[6]
+  end
+
+  def birth_new_fish
+    new_fish = new_cycle[-1] || 1
+
+    new_cycle[8] += new_fish if new_cycle[8]
+    new_cycle[8] = new_fish unless new_cycle[8]
+    new_cycle.delete(-1)
+  end
+
+  def spawn_fish
+    if reproduces?
+      restart_cycle_of_fish
+      birth_new_fish
     end
   end
 end
