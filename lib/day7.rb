@@ -82,7 +82,7 @@ class Subs
   def figure_fuel_usage(start_position, end_position)
     number_of_slots = (start_position - end_position).abs
 
-    (1..number_of_slots).sum
+    (number_of_slots * (number_of_slots + 1)) / 2
   end
 
   def fuel_possibilities

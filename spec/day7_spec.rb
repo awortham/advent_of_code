@@ -21,7 +21,7 @@ describe Day7 do
   private
 
   def crabs_positions
-    # Day7.new(path: "lib/crabs.txt")
-    Day7.new(path: "spec/support/crabs.txt")
+    Day7.new(path: "lib/crabs.txt")
+    # Day7.new(path: "spec/support/crabs.txt")
   end
 end
